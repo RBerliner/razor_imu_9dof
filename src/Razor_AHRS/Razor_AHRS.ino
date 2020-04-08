@@ -349,7 +349,7 @@ boolean DEBUG__NO_DRIFT_CORRECTION = false;
 
 #define DEBUG__LOOP_DELAY 1
 // Set to true to enable auto-calibration features of the M0 (does not apply to magnetometers)
-#define DEBUG__USE_DMP_M0 false
+#define DEBUG__USE_DMP_M0 true
 // Set to true to disable the use of the DCM algorithm
 #define DEBUG__USE_ONLY_DMP_M0 false
 
