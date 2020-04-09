@@ -137,6 +137,7 @@
               is 3x4 = 12 bytes long).
       "#ot" - Output angles in TEXT format (Output frames have form like "#YPR=-142.28,-5.38,33.52",
               followed by carriage return and line feed [\r\n]).
+      "#ok" - Output yaw in SignalK json format
       "#ox" - Output angles and linear acceleration and rotational
               velocity. Angles are in degrees, acceleration is
               in units of 1.0 = 1/256 G (9.8/256 m/s^2). Rotational
@@ -217,7 +218,7 @@
 // OUTPUT OPTIONS
 /*****************************************************************/
 // Set your serial port baud rate used to send out data here!
-#define OUTPUT__BAUD_RATE 57600
+#define OUTPUT__BAUD_RATE 9600
 #if HW__VERSION_CODE == 14001
 // Set your port used to send out data here!
 #define LOG_PORT SERIAL_PORT_USBVIRTUAL
@@ -241,10 +242,11 @@
 // Output format definitions (do not change)
 #define OUTPUT__FORMAT_TEXT 0 // Outputs data as text
 #define OUTPUT__FORMAT_BINARY 1 // Outputs data as binary float
+#define OUTPUT__FORMAT_SIGNALK 2 // Outputs data as json text with SignalK paths
 
 // Select your startup output mode and format here!
 int output_mode = OUTPUT__MODE_ANGLES;
-int output_format = OUTPUT__FORMAT_TEXT;
+int output_format = OUTPUT__FORMAT_SIGNALK;
 
 // Select if serial continuous streaming output is enabled per default on startup.
 #define OUTPUT__STARTUP_STREAM_ON true  // true or false
@@ -712,6 +714,11 @@ void loop()
         {
           output_mode = OUTPUT__MODE_ANGLES;
           output_format = OUTPUT__FORMAT_TEXT;
+        }
+        else if (output_param == 'k') // Output angles as _S_ignalK json
+        {
+          output_mode = OUTPUT__MODE_ANGLES;
+          output_format = OUTPUT__FORMAT_SIGNALK;
         }
         else if (output_param == 'b') // Output angles in _b_inary format
         {

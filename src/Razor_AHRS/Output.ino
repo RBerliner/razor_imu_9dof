@@ -18,6 +18,15 @@ void output_angles()
     LOG_PORT.print(TO_DEG(pitch)); LOG_PORT.print(",");
     LOG_PORT.print(TO_DEG(roll)); LOG_PORT.println();
   }
+  else if (output_format == OUTPUT__FORMAT_SIGNALK)
+  {
+    LOG_PORT.print("{\"context\": \"vessels.self\" , \"updates\" : [{ \"values\" : [{\"path\" : \"navigation.headingMagnetic\" , \"value\" :");
+    LOG_PORT.print(yaw); // SignalK expects the magnetic heading to be in rad
+    LOG_PORT.println("}], \"source\": { \"label\" : \"RazorIMU\"}}]}");
+    //LOG_PORT.print(TO_DEG(yaw)); LOG_PORT.print(",");
+    //LOG_PORT.print(TO_DEG(pitch)); LOG_PORT.print(",");
+    //LOG_PORT.print(TO_DEG(roll)); LOG_PORT.println();
+  }
 }
 
 void output_calibration(int calibration_sensor)
@@ -145,4 +154,3 @@ void output_sensors()
     }
   }
 }
-
