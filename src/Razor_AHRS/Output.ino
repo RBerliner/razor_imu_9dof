@@ -20,12 +20,19 @@ void output_angles()
   }
   else if (output_format == OUTPUT__FORMAT_SIGNALK)
   {
+    float value = 0.;
+
+    // When using the IMU for SignalK magnetic heading, you must choose yaw, pitch or roll
+    // dependent on the orientation of the IMU with respect to the vessel. Uncomment one of 
+    // the three following lines.
+
+    value = yaw;
+    //value = pitch;
+    //value = roll;
+
     LOG_PORT.print("{\"context\": \"vessels.self\" , \"updates\" : [{ \"values\" : [{\"path\" : \"navigation.headingMagnetic\" , \"value\" :");
-    LOG_PORT.print(yaw); // SignalK expects the magnetic heading to be in rad
-    LOG_PORT.println("}], \"source\": { \"label\" : \"RazorIMU\"}}]}");
-    //LOG_PORT.print(TO_DEG(yaw)); LOG_PORT.print(",");
-    //LOG_PORT.print(TO_DEG(pitch)); LOG_PORT.print(",");
-    //LOG_PORT.print(TO_DEG(roll)); LOG_PORT.println();
+    LOG_PORT.print(value,3); // SignalK expects the magnetic heading to be in rad
+    LOG_PORT.println("}], \"source\": { \"label\" : \"Razor.IMU\"}}]}");
   }
 }
 
