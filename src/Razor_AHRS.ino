@@ -138,6 +138,7 @@
       "#ot" - Output angles in TEXT format (Output frames have form like "#YPR=-142.28,-5.38,33.52",
               followed by carriage return and line feed [\r\n]).
       "#ok" - Output yaw in SignalK json format
+              Output will be pitch, roll or yaw dependent on which line has been un-commented in Output.ino
       "#ox" - Output angles and linear acceleration and rotational
               velocity. Angles are in degrees, acceleration is
               in units of 1.0 = 1/256 G (9.8/256 m/s^2). Rotational
@@ -218,7 +219,7 @@
 // OUTPUT OPTIONS
 /*****************************************************************/
 // Set your serial port baud rate used to send out data here!
-#define OUTPUT__BAUD_RATE 9600
+#define OUTPUT__BAUD_RATE 57600
 #if HW__VERSION_CODE == 14001
 // Set your port used to send out data here!
 #define LOG_PORT SERIAL_PORT_USBVIRTUAL
