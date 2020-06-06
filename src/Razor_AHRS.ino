@@ -69,7 +69,7 @@
 *   * Allow optional use of Flash/EEPROM for storing and reading calibration values.
 *   * Use self-test and temperature-compensation features of the sensors.
 ***************************************************************************************************************/
-#include <Arduino.h>
+
 /*
   "9DoF Razor IMU M0" hardware versions: SEN-14001
 
@@ -294,8 +294,8 @@ float MAGN_Z_MAX = 600;
 // Magnetometer (extended calibration mode)
 // Set to true to use extended magnetometer calibration (compensates hard & soft iron errors)
 boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-float magn_ellipsoid_center[3] = {-28.1354, -469.275, -539.250};
-float magn_ellipsoid_transform[3][3] = {{0.885841, 0.0201401, -0.00167223}, {0.0201401, 0.987135, 0.0466094}, {-0.00167223, 0.0466094, 0.769627}};
+float magn_ellipsoid_center[3] = {158.983, 267.144, 27.6684};
+float magn_ellipsoid_transform[3][3] = {{0.981976, -0.0135736, 0.0248959}, {-0.0135736, 0.943332, 0.0246245}, {0.0248959, 0.0246245, 0.964869}};
 
 // Gyroscope
 // "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z

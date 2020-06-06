@@ -26,9 +26,9 @@ void output_angles()
     // dependent on the orientation of the IMU with respect to the vessel. Uncomment one of 
     // the three following lines.
 
-    value = yaw;
+    //value = yaw;
     //value = pitch;
-    //value = roll;
+    value = roll;
 
     LOG_PORT.print("{\"context\": \"vessels.self\" , \"updates\" : [{ \"values\" : [{\"path\" : \"navigation.headingMagnetic\" , \"value\" :");
     LOG_PORT.print(value,3); // SignalK expects the magnetic heading to be in rad
