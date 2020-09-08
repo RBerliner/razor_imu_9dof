@@ -293,9 +293,13 @@ float MAGN_Z_MAX = 600;
 
 // Magnetometer (extended calibration mode)
 // Set to true to use extended magnetometer calibration (compensates hard & soft iron errors)
+//boolean CALIBRATION__MAGN_USE_EXTENDED = true;
+//float magn_ellipsoid_center[3] = {158.983, 267.144, 27.6684};
+//float magn_ellipsoid_transform[3][3] = {{0.981976, -0.0135736, 0.0248959}, {-0.0135736, 0.943332, 0.0246245}, {0.0248959, 0.0246245, 0.964869}};
+
 boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-float magn_ellipsoid_center[3] = {158.983, 267.144, 27.6684};
-float magn_ellipsoid_transform[3][3] = {{0.981976, -0.0135736, 0.0248959}, {-0.0135736, 0.943332, 0.0246245}, {0.0248959, 0.0246245, 0.964869}};
+float magn_ellipsoid_center[3] = {131.596, 270.218, -164.203};
+float magn_ellipsoid_transform[3][3] = {{0.986201, -0.0152150, 0.0165640}, {-0.0152150, 0.969348, 0.00279941}, {0.0165640, 0.00279941, 0.962880}};
 
 // Gyroscope
 // "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z
@@ -324,8 +328,9 @@ float MAGN_Z_MAX = 486;
 
 // Extended magn
 boolean CALIBRATION__MAGN_USE_EXTENDED = true;
-float magn_ellipsoid_center[3] = {91.5, -13.5, -48.1};
-float magn_ellipsoid_transform[3][3] = {{0.902, -0.00354, 0.000636}, {-0.00354, 0.9, -0.00599}, {0.000636, -0.00599, 1}};
+float magn_ellipsoid_center[3] = {145.237, 275.975, -111.734};
+float magn_ellipsoid_transform[3][3] = {{0.998515, 0.000143782, 0.00452174}, {0.000143782, 0.969106, 0.0167209}, {0.00452174, 0.0167209, 0.976698}};
+
 
 // Extended magn (with Sennheiser HD 485 headphones)
 //boolean CALIBRATION__MAGN_USE_EXTENDED = true;
