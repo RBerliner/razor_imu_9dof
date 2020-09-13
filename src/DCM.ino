@@ -123,7 +123,7 @@ void Matrix_update(void)
 
 void Euler_angles(void)
 {
-  if ((DCM_Matrix[2][0] < -1)||(DCM_Matrix[2][0] > 1)) num_math_errors++; else pitch = -asin(DCM_Matrix[2][0]); // Attempt to prevent nan problems...
-  roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
-  yaw = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);
+  if ((DCM_Matrix[2][0] < -1)||(DCM_Matrix[2][0] > 1)) num_math_errors++; else pitch = pitchAvg.reading(-asin(DCM_Matrix[2][0])); // Attempt to prevent nan problems...
+  roll = rollAvg.reading(atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]));
+  yaw = yawAvg.reading(atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]));
 }

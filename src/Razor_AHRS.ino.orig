@@ -493,10 +493,10 @@ float yaw = 0;
 float pitch = 0;
 float roll = 0;
 
-int movingAvgSamples = 100;
+int movingAvgSamples = 500;
 movingAvgFloat yawAvg(movingAvgSamples);
-movingAvgFloat pitchAvg(movingAvgSamples);
-movingAvgFloat rollAvg(movingAvgSamples);
+//movingAvgFloat pitchAvg(movingAvgSamples);
+//movingAvgFloat rollAvg(movingAvgSamples);
 
 // DCM timing in the main loop
 unsigned long timestamp = 0;
@@ -521,6 +521,7 @@ void read_sensors() {
   Read_Accel(); // Read accelerometer
   Read_Magn(); // Read magnetometer
 #endif // HW__VERSION_CODE
+
 }
 
 // Should be called after every #ca calibration command
@@ -584,7 +585,8 @@ void reset_sensor_fusion() {
   
   // GET PITCH
   // Using y-z-plane-component/x-component of gravity vector
-  pitch = -atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
+  //pitch = pitchAvg.reading(-atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2])));
+	pitch = (-atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2])));
 	
   // GET ROLL
   // Compensate pitch of gravity vector 
@@ -593,12 +595,14 @@ void reset_sensor_fusion() {
   // Normally using x-z-plane-component/y-component of compensated gravity vector
   // roll = atan2(temp2[1], sqrt(temp2[0] * temp2[0] + temp2[2] * temp2[2]));
   // Since we compensated for pitch, x-z-plane-component equals z-component:
-  roll = atan2(temp2[1], temp2[2]);
+  //roll =rollAvg.reading(atan2(temp2[1], temp2[2]));
+  roll =(atan2(temp2[1], temp2[2]));
   
   // GET YAW
   Compass_Heading();
-  yaw = MAG_Heading;
-  
+  LOG_PORT.print(TO_DEG(MAG_Heading)); LOG_PORT.print(", ");
+  yaw = yawAvg.reading(MAG_Heading);
+  LOG_PORT.println(yawAvg.getAvg());  
   // Init rotation matrix
   init_rotation_matrix(DCM_Matrix, yaw, pitch, roll);
 }
@@ -683,8 +687,8 @@ void setup()
 #endif
 
 yawAvg.begin();
-pitchAvg.begin();
-rollAvg.begin();
+//pitchAvg.begin();
+//rollAvg.begin();
 }
 
 // Main loop
