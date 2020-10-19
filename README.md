@@ -1,33 +1,27 @@
-Official ROS Documentation
---------------------------
-A much more extensive and standard ROS-style version of this documentation can be found on the ROS wiki at:
+# SparkFun (PID 14001 9DoF Razor IMU M0) as an electronic compass.
 
-http://wiki.ros.org/razor_imu_9dof
+The Sparkfun Razor IMU features:
+  * MPU-9250 with three 3-axis sensors:
+  * Accelerometer, gyroscope and magnetometer
+  * Atmel SAMD21 cortex-M0+ 32-bit ARM micro controller (Arduino compatible with boot loader)
+  * 9DoF (9 Degrees of Freedom) for multipurpose IMU (Inertial Measurement Unit)
+  * Includes a microSD card socket, LiPo battery charger
 
+As of this writing (10/15/2020) the product is no longer available from Sparkfun but can be still obtained from Amazon:
+https://www.amazon.com/SparkFun-PID-14001-9DoF-Razor/dp/B01MXW00BY.
 
-Install and Configure ROS Package
----------------------------------
-1) Install dependencies:
-
-	$ sudo apt-get install python-visual
-
-2) Download code:
-
-	$ cd ~/catkin_workspace/src
-	$ git clone https://github.com/KristofRobot/razor_imu_9dof.git
-	$ cd ..
-	$ catkin_make
+The code here is forked from  https://github.com/KristofRobot/razor_imu_9dof and is lightly rewritten to add outputting the magnetic heading data in SignalK form. The device is currently used by directly connecting to the SignalK RPi server via USB.
 
 
 Install Arduino firmware
 -------------------------
-1) For SEN-14001 (9DoF Razor IMU M0), you will need to follow the same instructions as for the default firmware on https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide and use an updated version of SparkFun_MPU-9250-DMP_Arduino_Library from https://github.com/lebarsfa/SparkFun_MPU-9250-DMP_Arduino_Library (an updated version of the default firmware is also available on https://github.com/lebarsfa/9DOF_Razor_IMU).
+1) For SEN-14001 (9DoF Razor IMU M0), you will need to follow the same instructions as for the default firmware on https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide and use an updated version of SparkFun_MPU-9250-DMP_Arduino_Library from https://github.com/lebarsfa/SparkFun_MPU-9250-DMP_Arduino_Library (an updated version of the default firmware is also available on https://github.com/lebarsfa/9DOF_Razor_IMU). The lebarsfa library is obtained from github by adding it to lib_deps in the platformio.ini file.
 
-2) Open ``src/Razor_AHRS/Razor_AHRS.ino`` in Arduino IDE. Note: this is a modified version
+2) Open `src/Razor_AHRS/Razor_AHRS.ino` in Arduino IDE. Note: this is a modified version
 of Peter Bartz' original Arduino code (see https://github.com/ptrbrtz/razor-9dof-ahrs). 
-Use this version - it emits linear acceleration and angular velocity data required by the ROS Imu message
+Use the signalk branch of this repo.
 
-3) Select your hardware here by uncommenting the right line in ``src/Razor_AHRS/Razor_AHRS.ino``, e.g.
+3) Select your hardware here by uncommenting the correct line in `src/Razor_AHRS/Razor_AHRS.ino`, e.g.
 
 <pre>
 // HARDWARE OPTIONS
@@ -43,62 +37,67 @@ Use this version - it emits linear acceleration and angular velocity data requir
 
 4) Upload Arduino sketch to the Sparkfun 9DOF Razor IMU board
 
-
-Configure
+Razor operation and output
 ---------
-In its default configuration, ``razor_imu_9dof`` expects a yaml config file ``my_razor.yaml`` with:
-* USB port to use
-* Calibration parameters
 
-An example``razor.yaml`` file is provided.
-Copy that file to ``my_razor.yaml`` as follows:
+Whe the device starts up, it is in SignalK mode, outputting the yaw as the magnetic heading.
 
-    $ roscd razor_imu_9dof/config
-    $ cp razor.yaml my_razor.yaml
+  <pre>
+  {"context": "vessels.self" , "updates" : [{ "values" : [{"path" : "navigation.headingMagnetic" , "value" :-0.619}], "source": { "label" : "Razor.IMU"}}]}
+  {"context": "vessels.self" , "updates" : [{ "values" : [{"path" : "navigation.headingMagnetic" , "value" :-0.619}], "source": { "label" : "Razor.IMU"}}]}
+  {"context": "vessels.self" , "updates" : [{ "values" : [{"path" : "navigation.headingMagnetic" , "value" :-0.619}], "source": { "label" : "Razor.IMU"}}]}
+  .
+  .
+  .
+</pre>
 
-Then, edit ``my_razor.yaml`` as needed
+If you click in the VSCode Terminal window and type `#ot` you will get the output in Yaw, Pitch, Roll (YPR) form.
 
-Launch
-------
-Publisher and 3D visualization:
+  <pre>
+  #YPR=-35.17,-18.06,-157.33
+  #YPR=-35.18,-18.04,-157.32
+  #YPR=-35.15,-18.09,-157.34
+  .
+  .
+  .
+</pre>
 
-	$ roslaunch razor_imu_9dof razor-pub-and-display.launch
-
-Publisher only:
-
-	$ roslaunch razor_imu_9dof razor-pub.launch
-
-Publisher only with diagnostics:
-
-	$ roslaunch razor_imu_9dof razor-pub-diags.launch
-
-3D visualization only:
-
-	$ roslaunch razor_imu_9dof razor-display.launch
+There are a number of other commands than can be used which are documented in the file Razor_AHRS.ino
 
 
-Calibrate
+IMU Calibration
 ---------
-For best accuracy, follow the tutorial to calibrate the sensors:
+Calibration of the accelerometer and gyro is not necessary but it is important to perform a calibration of the magnetomoter. This should be done in the location where the device is to be installed. In order to dperform the calibration, you will need to install Processing https://processing.org. The Processing sketch that has been written for the calibration works for Processing Ver 2.2.1. I do not know about other versions.
 
-http://wiki.ros.org/razor_imu_9dof
+After installing Processing, navigate to `/Processing/Magnetometer_calibration` and execute the file `Magnetometer_calibration.pde`. This will open a Processing Sketch editor window. There are instructions in the `pde` file for loading the EJML library. This requirement has been satisfied by the placement of `EJML.jar` in the `code` folder.
 
-An updated version of Peter Bartz's magnetometer calibration scripts from https://github.com/ptrbrtz/razor-9dof-ahrs is provided in the ``magnetometer_calibration`` directory.
+ It will be necessary for you to specify the serial port that your device is connected to. Start the Magnetometer_calibration sketch by clicking on the Run button at the upper left hand corner of Processing window. 
 
-Update ``my_razor.yaml`` with the new calibration parameters.
+![picture 4](images/dadeb8c7d28584c3b36f083cd6f086085b8c5852aa0d36726978e1813902b057.png)  
+ 
 
-Dynamic Reconfigure
--------------------
-After having launched the publisher with one of the launch commands listed above, 
-it is possible to dynamically reconfigure the yaw calibration.
 
-1) Run:
+In the output portion of the Processing window, it will list the available serial ports. Here, I am using COM17 which is port 3. Scroll down the Processing sketch to find the line that specifies the `SERIAL_PORT_NUMBER` and enter the correct port number. Then restart the sketch.
 
-    $ rosrun rqt_reconfigure rqt_reconfigure 
-    
-2) Select ``imu_node``. 
+Now the object is to turn the Razor in all directions to try to uniformly fill the surface of a sphere. The center of the sphere will be displaced from the drawing if the local environment is distorted.
 
-3) Change the slider to move the calibration +/- 10 degrees. 
-If you are running the 3D visualization you'll see the display jump when the new calibration takes effect.
+![picture 2](images/356f0591ebfac4c51c59485c814f46ceaa3c68c2b10fa317c33c63d669b0b561.png)  
 
-The intent of this feature is to let you tune the alignment of the AHRS to the direction of the robot driving direction, so that if you can determine that, for example, the AHRS reads 30 degrees when the robot is actually going at 35 degrees as shown by e.g. GPS, you can tune the calibration to make it read 35. It's the compass-equivalent of bore-sighting a camera.
+When you are satisfied with the result, you press space to output the calibration data and parameters. At the bottom of the Processing window, you get:
+
+![picture 3](images/dd82d72c414f7a16156462bd4064b55f942384ef207a4dec923694723321048d.png)  
+
+Follow the instructions to enter the magnetometer calibration parameters into the code.
+
+You can see a fuller description of the magnetometer calibration at https://github.com/Razor-AHRS/razor-9dof-ahrs/wiki/Tutorial.
+
+Compass Calibration
+---------
+
+The 9DoF Razor IMU was mounted so that changes to the vessel heading corresponded to changes to Yaw. On a relatively calm day the vessel was motored over a circular course, stabilizing on a course every 45 deg. The Ratheon ST6000 fluxgate compass reading and Yaw reading were recorded as a calibration.  The SignalK Calibraiton plugin was used to translate the raw 9DoF Razor IMU readings to the compass headings as given by the fluxgate compass. This calibration was performed 9/7/20.
+
+The 9DoF Razor calibration was checked on 10/14/20 by motoring a circular course once again, incrementing the autopilot in 10 deg steps and allowing the boat to stabilize on course before recording the fluxgate compass and 9DoF Razor readings. The results are shown below.
+
+![picture 4](images/4bc4d1250242be6ce1692628d7c374e4fcc55134a78329cae2f477c8d3f79e54.png)  
+
+I doubt that you can do much better than this. The scatter in the data is, I believe, indicative of wandering of the boat heading over short periods of time and reflective of the different setting times of the two compasses. 

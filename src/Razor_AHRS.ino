@@ -64,6 +64,10 @@
 *       * Increased startup delay to try to get a correct initial orientation for the M0.
 *     * v1.5.7
 *       * Calibration data are now also used to compute the initial orientation.
+*     * Signalk 1.0
+*       * Output data in SignalK format.
+*       * Implement #ok command for SignalK data.
+*       * Startup with SignalK output         
 *
 * TODOs:
 *   * Allow optional use of Flash/EEPROM for storing and reading calibration values.
